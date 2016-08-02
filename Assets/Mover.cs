@@ -23,7 +23,7 @@ public class Mover : MonoBehaviour {
     // If true, Mover heading is determined by the HMD forward direction. Else,
     // use the forward direction of the WandController this Mover is attached
     // to
-    private bool useHMDHeading = true;
+    private bool useHMDHeading = false;
 
     // Returns the SteamVR_Camera associated to the HMD
     SteamVR_Camera headCamera {

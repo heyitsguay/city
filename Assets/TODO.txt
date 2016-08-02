@@ -1,2 +1,6 @@
-﻿- Ground texture color could be dark gray for an asphalt effect
-- Light movement could allow for day/night cycles
+﻿- 08/02/16 Collision detection for the user/camera
+- 08/02/16 Fix the distFactor in GridGenerator.cs
+- 08/02/16 Is occlusion culling feasible?
+- 07/31/16 movement could allow for day/night cycles
+
+- 07/31/16 Ground texture color could be dark gray for an asphalt effect DONE 08/01/16

@@ -9,18 +9,18 @@ public class GridGenerator : MonoBehaviour {
     private HashSet<GameObject> cells = new HashSet<GameObject>();
 
     // Grid cell x radius (half-width)
-    private float cellX = 30f;
+    private float cellX = 60f;
     // Grid cell z radius (half-height)
-    private float cellZ = 30f;
+    private float cellZ = 60f;
 
     // Road radius (half-width)
     // (Roads are actually just gaps between grid cells)
     private float roadR = 6f;
 
     // Grid x radius (half-width)
-    private int gridX = 4;
+    private int gridX = 5;
     // Grid z radius (half-height)
-    private int gridZ = 4;
+    private int gridZ = 5;
 
     // Grid cells are offset this much off the ground, so they render properly
     private float offsetY = 0.05f;
@@ -103,12 +103,22 @@ public class GridGenerator : MonoBehaviour {
 
 
     // Generate some simple buildings on a grid cell
-    void GenerateBuildings(GameObject cell, float buildSize=5f, float deltaSize=0.8f) {
+    void GenerateBuildings(GameObject cell, float buildSize=30f, float deltaSize=1.6f) {
 
         // Calculate the number of buildings in the x and z directions
         int xMax = (int)Mathf.Floor( (cellX + 0.5f * buildSize) / (buildSize + deltaSize) );
         int zMax = (int)Mathf.Floor( (cellZ + 0.5f * buildSize) / (buildSize + deltaSize) );
-        
+
+        // Get the center of the current cell
+        float x0 = cell.transform.position[0];
+        float z0 = cell.transform.position[2];
+
+        // Distance squared for the current cell
+        float cellDist2 = Mathf.Pow(x0, 2) + Mathf.Pow(z0, 2);
+
+        // Distance-based factor in height scaling
+        float distFactor = 4 + Mathf.Exp(0.1f * cellDist2 - 1000f);
+
         // Calculate the locations of the centers for each building
         for (int x=1; x<=xMax; ++x) {
             // building X location
@@ -131,25 +141,40 @@ public class GridGenerator : MonoBehaviour {
                 // Compute Z scaling and recentering
                 float zDown = Mathf.Max(zCenter - 0.5f * buildSize, deltaSize);
                 float zUp = Mathf.Min(zCenter + 0.5f * buildSize, cellZ - deltaSize);
-                zCenter = 0.5f * (xLeft + xRight);
+                zCenter = 0.5f * (zDown + zUp);
 
                 // Compute the building Z scaling
                 float scaleZ = zUp - zCenter;
 
+                // Compute the final actual x and z building coordinates
+                float xFinal = x0 + xCenter - 0.5f * cellX;
+                float zFinal = z0 + zCenter - 0.5f * cellZ;
+
+                // Perlin noise scaling parameter, for random building heights
+                float perlinScale = 0.01f;
+
+                // Controls the maximum building height
+                float baseHeight = 800f;
+
+                // Compute the building height parameter at this location
+                float height = baseHeight * Mathf.PerlinNoise(perlinScale * xFinal, perlinScale * zFinal);
+
                 // Compute the building height (Y scaling)
-                float height = 10f + 9f * (float)rng.NextDouble();
+                //float height = 10f + 190f * (float)rng.NextDouble();
+
+                
 
                 // Create a building
                 GameObject building = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
                 // Make the building a child of the cell
-                building.transform.parent = cell.transform;
+                //building.transform.parent = cell.transform;
 
                 // Translate the building
-                building.transform.position = new Vector3(xCenter, 0.5f * height, zCenter);
+                building.transform.position = new Vector3(x0 + xCenter - 0.5f * cellX, 0.5f * height, z0 + zCenter - 0.5f * cellZ);
 
                 // Scale the building
-                building.transform.localScale = new Vector3(scaleX, 0.5f * height, scaleZ);
+                building.transform.localScale = new Vector3(scaleX, height, scaleZ);
 
                 // Add a material to the building
                 building.GetComponent<MeshRenderer>().material = buildMaterial;
