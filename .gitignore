@@ -1,5 +1,11 @@
 Library/
-Assets/**/
+Assets/Editor/
+Assets/Plugins/
+Assets/SampleScenes/
+Assets/Standard Assets/
+Assets/SteamVR/
+Assets/The_Texture_Lab/
+Assets/UnityVS/
 ProjectSettings/
 Temp/
 *.meta

@@ -153,11 +153,13 @@ public class GridGenerator : MonoBehaviour {
                 // Perlin noise scaling parameter, for random building heights
                 float perlinScale = 0.01f;
 
+                // Controls the minimum building height
                 // Controls the maximum building height
                 float baseHeight = 800f;
 
                 // Compute the building height parameter at this location
                 float height = baseHeight * Mathf.PerlinNoise(perlinScale * xFinal, perlinScale * zFinal);
+                //float height = baseHeight * 
 
                 // Compute the building height (Y scaling)
                 //float height = 10f + 190f * (float)rng.NextDouble();
